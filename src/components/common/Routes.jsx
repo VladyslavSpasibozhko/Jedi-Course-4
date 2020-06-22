@@ -1,25 +1,22 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import People from '../pages/People'
-import Planets from '../pages/Planets'
-import Starship from '../pages/Starship'
 import NotFound from '../pages/NotFound'
+import PlanetsWrappers from '../wrappers/PlanetsWrappers'
+import PeopleWrapper from '../wrappers/PeopleWrapper'
+import StarhipsWrapper from '../wrappers/StarhipsWrapper'
 
 const routes = [
   {
     path:'/people',
-    component:People,
-    exact:true
+    component:PeopleWrapper
   },
   {
     path:'/planets',
-    component:Planets,
-    exact:true
+    component:PlanetsWrappers
   },
   {
-    path:'/starship',
-    component:Starship,
-    exact:true
+    path:'/starships',
+    component:StarhipsWrapper
   },
 ]
 

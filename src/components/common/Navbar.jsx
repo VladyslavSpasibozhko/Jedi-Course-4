@@ -11,7 +11,7 @@ const links = [
     title:'Planets'
   },
   {
-    to:'/starship',
+    to:'/starships',
     title:'Starship'
   }
 ]

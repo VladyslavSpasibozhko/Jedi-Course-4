@@ -1,38 +1,75 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-export const usePageData =(initialState, name)=> {
+export const usePageData = (name, columns) => {
+	const [state, setState] = useState([])
 
-  const storageData = JSON.parse(sessionStorage.getItem(name))
+	const isEmpty = useCallback(() => {
+		return state.length === 0
+	}, [state.length])
 
-  const [ state, setState ] = useState(storageData || initialState || [])
+	const add = data => {
+		const newData = [...state, data]
+		setData(newData)
+	}
 
-  const columns = Object.keys(initialState[0])
+	const remove = arrData => {
+		const newData = state.filter(item => item.id !== arrData.id)
+		setData(newData)
+	}
 
-  const isEmpty =()=> state.length === 0
+	const update = item => {
+		const arr = state.map(el => {
+			if (item.id === el.id) {
+				el = { ...item }
+			}
+			return el
+		})
+		setData([...arr])
+	}
 
-  const add = (data) => setState([...state, data])
+	const checked =(item)=> {
+		const newState = state.map(el => {
+			if (el.id === item.id){
+				el.beloved
+			 		? el.beloved = !el.beloved
+					: el.beloved = true
+			}
+			return el
+		})
 
-  const remove =(arrData)=> {
-    setState(state.filter(item => item.id !== arrData.id))
-  }
+		setData(newState)
+	}
 
-  const getInitialData = () => {
-    return columns.reduce((cols, columnName) => {
-      cols[columnName] = "";
-      return cols;
-    }, {})
-  }
+	const setData = arr => {
+		setState(arr)
+		setToStorage(arr)
+	}
 
-  useEffect(()=> {
-      sessionStorage.setItem(name, JSON.stringify(state))
-  }, [ state ])
+	const getInitialData = id => {
+		if (id) {
+			const searchedObj = state.find(item => item.id === id)
+			if (searchedObj) {
+				return searchedObj
+			}
+		}
 
-  return {
-    add,
-    state,
-    remove,
-    isEmpty,
-    columns,
-    getInitialData
-  }
+		return columns.reduce((acc, item) => {
+			acc[item] = ''
+			return acc
+		}, {})
+	}
+
+	const setToStorage = data =>
+		sessionStorage.setItem(name, JSON.stringify(data))
+
+	return {
+		add,
+		state,
+		update,
+		remove,
+		checked,
+		setData,
+		isEmpty,
+		getInitialData,
+	}
 }

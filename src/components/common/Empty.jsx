@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import Button from './Button'
-import Form from './Form'
 
-const Empty = ({ message, columns, getInitialData, add }) => {
+const Empty = ({ name, onClickHandler }) => {
+
+	const title = `There are no ${name} available`
 
   const [ enable, setEnable ] = useState(false)
 
@@ -11,23 +12,17 @@ const Empty = ({ message, columns, getInitialData, add }) => {
       <p
         className="font-weight-bold text-center p-2 h5"
       >
-        {message}
+        {title}
       </p>
       {
-        enable
-          ? (
-            <Form
-              columns={columns}
-              initialData={getInitialData()}
-              onAddData={add}
-            />
-          ) : (
-            <Button
-              label="Add"
-              classes="btn btn-info"
-              onClick={() => setEnable(!enable)}
-            />
-          )
+        <Button
+          label="Add"
+          className="btn btn-info"
+          onClick={() => {
+						onClickHandler()
+          	setEnable(!enable)
+					}}
+        />
       }
     </div>
   )

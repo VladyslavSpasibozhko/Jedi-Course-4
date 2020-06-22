@@ -1,46 +1,44 @@
-import React, { useState } from 'react';
-import Input from "./Input";
-import Button from "./Button";
+import React from 'react'
+import Input from './Input'
+import Button from './Button'
+import { useFormik } from 'formik'
+import { useHistory } from 'react-router-dom'
 
-function Form ({columns, initialData, onAddData}){
+const Form = ({ columns, data: initialData, onAddData, from, validation }) => {
+	const { push } = useHistory()
 
-  const [data, setData] = useState(initialData);
+	const handleClick = item => {
+		onAddData(item)
+		push(`/${from}`)
+	}
 
-  const handleClick = (event) => {
-    event.preventDefault();
-    onAddData(data);
-    setData(initialData)
-  }
+	const formik = useFormik({
+		initialValues: initialData,
+		validationSchema:validation,
+		onSubmit: handleClick,
+	})
 
-  const handleChange = (event) => {
-    const { currentTarget : input } = event;
+	console.log(validation)
 
-    setData({
-      ...data,
-      [input.name]:input.value
-    })
-  }
+	const { values, errors, handleChange, handleSubmit, touched } = formik
 
+	return (
+		<form onSubmit={handleSubmit}>
+			{columns.map(columnName => (
+				<Input
+					key={columnName}
+					name={columnName}
+					label={columnName}
+					value={values[columnName]}
+					type="text"
+					onChange={handleChange}
+					disabled={initialData[columnName] && columnName === 'id'}
+					error={touched[columnName] && errors[columnName]}
+				/>
+			))}
+			<Button type="submit" label="Save" className="btn btn-info" />
+		</form>
+	)
+}
 
-  return (
-    <form>
-      {columns.map( columnName => (
-        <Input
-          key={columnName}
-          name={columnName}
-          label={columnName}
-          value={data[columnName]}
-          type="input"
-          onChange={handleChange}
-        />
-      ))}
-      <Button
-        label="Save"
-        classes="btn btn-info"
-        onClick={handleClick}
-      />
-    </form>
-  );
-};
-
-export default Form;
+export default Form

@@ -5,8 +5,14 @@ import Empty from '../common/Empty'
 import Button from '../common/Button'
 import { useHistory } from 'react-router-dom'
 
-const Planets = ({ data, name, columns, onRemoveData, isEmpty, onChecked }) => {
-
+const Starships = ({
+	data,
+	name,
+	columns,
+	onRemoveData,
+	onChecked,
+	isEmpty,
+}) => {
 	const title = name.replace(name[0], name[0].toUpperCase())
 
 	const { push } = useHistory()
@@ -30,7 +36,7 @@ const Planets = ({ data, name, columns, onRemoveData, isEmpty, onChecked }) => {
 				{...{ onChecked }}
 			/>
 			<Button
-				label="New planet"
+				label="New starship"
 				className="btn btn-warning"
 				onClick={showFormHandler}
 			/>
@@ -38,4 +44,4 @@ const Planets = ({ data, name, columns, onRemoveData, isEmpty, onChecked }) => {
 	)
 }
 
-export default Planets
+export default Starships
