@@ -27,12 +27,10 @@ export const usePageData = (name, columns) => {
 		setData([...arr])
 	}
 
-	const checked =(item)=> {
+	const checked = item => {
 		const newState = state.map(el => {
-			if (el.id === item.id){
-				el.beloved
-			 		? el.beloved = !el.beloved
-					: el.beloved = true
+			if (el.id === item.id) {
+				el.beloved ? (el.beloved = !el.beloved) : (el.beloved = true)
 			}
 			return el
 		})

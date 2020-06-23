@@ -1,38 +1,35 @@
 import React, { useLayoutEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { usePageData } from '../../hooks/usePageData'
-import { useRequest } from '../../hooks/useRequest'
 import Form from '../common/Form'
 import Planets from '../pages/Planets'
 import { planetsFormValidation } from '../../formik/schemas'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+	addPlanet,
+	checkPlanet,
+	getPlanets,
+	removePlanet,
+	updatePlanet,
+} from '../../redux/actions/planetsActions'
+import { getItem } from '../../helpers/helpers'
+import { getAllPlanets } from '../../redux/selectors/selectors'
 
-const planetsCol = ['name', 'gravity', 'diameter', 'climate', 'id']
+const planetsInitial = {
+	name: '',
+	gravity: '',
+	diameter: '',
+	climate: '',
+	id: '',
+}
+
 const name = 'planets'
 
 const PlanetsWrappers = () => {
-
-	const {
-		add,
-		state,
-		remove,
-		update,
-		setData,
-		isEmpty,
-		checked,
-		getInitialData,
-	} = usePageData(name, planetsCol)
-
-	const { getData } = useRequest(name, planetsCol)
+	const dispatch = useDispatch()
+	const data = useSelector(getAllPlanets)
 
 	useLayoutEffect(() => {
-		(async () => {
-			try {
-				const data = await getData()
-				setData(data)
-			} catch (e) {
-				console.log(e)
-			}
-		})()
+		dispatch(getPlanets())
 	}, [])
 
 	return (
@@ -44,9 +41,8 @@ const PlanetsWrappers = () => {
 					component={() => (
 						<Form
 							from={name}
-							data={getInitialData()}
-							columns={planetsCol}
-							onAddData={add}
+							data={planetsInitial}
+							onAddData={item => dispatch(addPlanet(item))}
 							validation={planetsFormValidation}
 						/>
 					)}
@@ -54,12 +50,11 @@ const PlanetsWrappers = () => {
 				<Route
 					exact
 					path={`/${name}/:id`}
-					component={({ match: { params }}) => (
+					component={({ match: { params } }) => (
 						<Form
 							from={name}
-							data={getInitialData(params.id)}
-							columns={planetsCol}
-							onAddData={update}
+							data={getItem(data, params.id) || planetsInitial}
+							onAddData={item => dispatch(updatePlanet(item))}
 							validation={planetsFormValidation}
 						/>
 					)}
@@ -68,11 +63,10 @@ const PlanetsWrappers = () => {
 					component={() => (
 						<Planets
 							name={name}
-							data={state}
-							columns={planetsCol}
-							onChecked={checked}
-							onRemoveData={remove}
-							isEmpty={isEmpty}
+							data={data}
+							onChecked={item => dispatch(checkPlanet(item))}
+							onRemoveData={item => dispatch(removePlanet(item))}
+							isEmpty={data.length === 0}
 						/>
 					)}
 				/>

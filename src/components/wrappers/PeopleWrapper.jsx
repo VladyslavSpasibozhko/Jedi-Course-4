@@ -1,37 +1,29 @@
 import React, { useLayoutEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { usePageData } from '../../hooks/usePageData'
-import { useRequest } from '../../hooks/useRequest'
 import Form from '../common/Form'
 import People from '../pages/People'
 import { peopleFormValidation } from '../../formik/schemas'
+import { useDispatch, useSelector } from 'react-redux'
+import { addPerson, getPeople, updatePerson, checkPerson, removePerson } from '../../redux/actions/peopleActions'
+import { getItem } from '../../helpers/helpers'
+import { getAllPeople } from '../../redux/selectors/selectors'
 
-const peopleCol = ['name', 'mass', 'birth_year', 'gender', 'id']
 const name = 'people'
+const peopleInitialColumns = {
+	name:"",
+	mass:"",
+	birth_year:"",
+	gender: "",
+	id:""
+}
 
 const PeopleWrapper = () => {
-	const {
-		add,
-		state,
-		remove,
-		update,
-		setData,
-		isEmpty,
-		checked,
-		getInitialData,
-	} = usePageData(name, peopleCol)
 
-	const { getData } = useRequest(name, peopleCol)
+	const dispatch = useDispatch()
+	const data = useSelector(getAllPeople)
 
 	useLayoutEffect(() => {
-		(async () => {
-			try {
-				const data = await getData()
-				setData(data)
-			} catch (e) {
-				console.log(e)
-			}
-		})()
+		dispatch(getPeople())
 	}, [])
 
 	return (
@@ -43,9 +35,8 @@ const PeopleWrapper = () => {
 					component={() => (
 						<Form
 							from={name}
-							data={getInitialData()}
-							columns={peopleCol}
-							onAddData={add}
+							data={peopleInitialColumns}
+							onAddData={(item)=> dispatch(addPerson(item))}
 							validation={peopleFormValidation}
 						/>
 					)}
@@ -57,9 +48,8 @@ const PeopleWrapper = () => {
 					component={({ match: { params } }) => (
 						<Form
 							from={name}
-							data={getInitialData(params.id)}
-							columns={peopleCol}
-							onAddData={update}
+							data={getItem(data, params.id) || peopleInitialColumns}
+							onAddData={(item)=> dispatch(updatePerson(item))}
 							validation={peopleFormValidation}
 						/>
 					)}
@@ -69,11 +59,10 @@ const PeopleWrapper = () => {
 					component={() => (
 						<People
 							name={name}
-							data={state}
-							columns={peopleCol}
-							onChecked={checked}
-							onRemoveData={remove}
-							isEmpty={isEmpty}
+							data={data}
+							onChecked={(item) => dispatch(checkPerson(item)) }
+							onRemoveData={(item) => dispatch(removePerson(item))}
+							isEmpty={data.length === 0}
 						/>
 					)}
 				/>
@@ -83,3 +72,5 @@ const PeopleWrapper = () => {
 }
 
 export default PeopleWrapper
+
+

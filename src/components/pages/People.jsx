@@ -5,7 +5,7 @@ import Title from '../common/Title'
 import Empty from '../common/Empty'
 import Button from '../common/Button'
 
-const People = ({ data, isEmpty, columns, name, onRemoveData, onChecked }) => {
+const People = ({ data, isEmpty, name, onRemoveData, onChecked }) => {
 
 	const title = name.replace(name[0], name[0].toUpperCase())
 
@@ -15,7 +15,7 @@ const People = ({ data, isEmpty, columns, name, onRemoveData, onChecked }) => {
 		push(`/${name}/new`)
 	}
 
-	if (isEmpty()) {
+	if (isEmpty) {
 		return <Empty name={title} onClickHandler={showFormHandler} />
 	}
 
@@ -25,7 +25,6 @@ const People = ({ data, isEmpty, columns, name, onRemoveData, onChecked }) => {
 			<Table
 				tableDescriptor={title}
 				{...{ data }}
-				{...{ columns }}
 				{...{ onRemoveData }}
 				{...{ onChecked }}
 			/>

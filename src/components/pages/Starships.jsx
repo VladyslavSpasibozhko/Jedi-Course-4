@@ -8,7 +8,6 @@ import { useHistory } from 'react-router-dom'
 const Starships = ({
 	data,
 	name,
-	columns,
 	onRemoveData,
 	onChecked,
 	isEmpty,
@@ -21,7 +20,7 @@ const Starships = ({
 		push(`/${name}/new`)
 	}
 
-	if (isEmpty()) {
+	if (isEmpty) {
 		return <Empty name={title} onClickHandler={showFormHandler} />
 	}
 
@@ -31,7 +30,6 @@ const Starships = ({
 			<Table
 				tableDescriptor={title}
 				{...{ data }}
-				{...{ columns }}
 				{...{ onRemoveData }}
 				{...{ onChecked }}
 			/>

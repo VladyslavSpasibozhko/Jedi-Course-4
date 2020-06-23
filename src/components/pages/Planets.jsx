@@ -5,7 +5,7 @@ import Empty from '../common/Empty'
 import Button from '../common/Button'
 import { useHistory } from 'react-router-dom'
 
-const Planets = ({ data, name, columns, onRemoveData, isEmpty, onChecked }) => {
+const Planets = ({ data, name, onRemoveData, isEmpty, onChecked }) => {
 
 	const title = name.replace(name[0], name[0].toUpperCase())
 
@@ -15,7 +15,7 @@ const Planets = ({ data, name, columns, onRemoveData, isEmpty, onChecked }) => {
 		push(`/${name}/new`)
 	}
 
-	if (isEmpty()) {
+	if (isEmpty) {
 		return <Empty name={title} onClickHandler={showFormHandler} />
 	}
 
@@ -25,7 +25,6 @@ const Planets = ({ data, name, columns, onRemoveData, isEmpty, onChecked }) => {
 			<Table
 				tableDescriptor={title}
 				{...{ data }}
-				{...{ columns }}
 				{...{ onRemoveData }}
 				{...{ onChecked }}
 			/>

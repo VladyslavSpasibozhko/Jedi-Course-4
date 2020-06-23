@@ -13,7 +13,7 @@ export const peopleFormValidation = Yup.object().shape({
 	birth_year: Yup.number()
 		.integer('Number must be integer')
 		.required('Required'),
-	gender: Yup.mixed().oneOf(['male', 'female', 'other']).required(),
+	gender: Yup.mixed().oneOf(['male', 'female', 'n/a']).required(),
 	id: Yup.string()
 		.matches(
 			/(?=.*[a-z])(?=.*[0-9])/,

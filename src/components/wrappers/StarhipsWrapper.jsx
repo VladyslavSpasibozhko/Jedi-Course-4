@@ -1,37 +1,34 @@
 import React, { useLayoutEffect } from 'react'
-import { usePageData } from '../../hooks/usePageData'
-import { useRequest } from '../../hooks/useRequest'
 import Form from '../common/Form'
 import { Route, Switch } from 'react-router-dom'
 import Starships from '../pages/Starships'
 import { starshipsFormValidation } from '../../formik/schemas'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+	addStarship,
+	checkStarship,
+	getStarships,
+	removeStarship,
+	updateStarship,
+} from '../../redux/actions/starshipsActions'
+import { getItem } from '../../helpers/helpers'
+import { getAllStarships } from '../../redux/selectors/selectors'
 
-const starshipsCol = ['name', 'model', 'passengers', 'length', 'id']
+const starshipsInitialData = {
+	name: '',
+	model: '',
+	passengers: '',
+	length: '',
+	id: '',
+}
 const name = 'starships'
 
 const StarhipsWrapper = () => {
-	const {
-		add,
-		state,
-		remove,
-		update,
-		setData,
-		isEmpty,
-		checked,
-		getInitialData,
-	} = usePageData(name, starshipsCol)
-
-	const { getData } = useRequest(name, starshipsCol)
+	const dispatch = useDispatch()
+	const data = useSelector(getAllStarships)
 
 	useLayoutEffect(() => {
-		(async () => {
-			try {
-				const data = await getData()
-				setData(data)
-			} catch (e) {
-				console.log(e)
-			}
-		})()
+		dispatch(getStarships())
 	}, [])
 
 	return (
@@ -43,9 +40,8 @@ const StarhipsWrapper = () => {
 					component={() => (
 						<Form
 							from={name}
-							data={getInitialData()}
-							columns={starshipsCol}
-							onAddData={add}
+							data={starshipsInitialData}
+							onAddData={item => dispatch(addStarship(item))}
 							validation={starshipsFormValidation}
 						/>
 					)}
@@ -56,9 +52,8 @@ const StarhipsWrapper = () => {
 					component={({ match: { params } }) => (
 						<Form
 							from={name}
-							data={getInitialData(params.id)}
-							columns={starshipsCol}
-							onAddData={update}
+							data={getItem(data, params.id) || starshipsInitialData}
+							onAddData={item => dispatch(updateStarship(item))}
 							validation={starshipsFormValidation}
 						/>
 					)}
@@ -68,11 +63,10 @@ const StarhipsWrapper = () => {
 					component={() => (
 						<Starships
 							name={name}
-							data={state}
-							columns={starshipsCol}
-							onChecked={checked}
-							onRemoveData={remove}
-							isEmpty={isEmpty}
+							data={data}
+							onChecked={item => dispatch(checkStarship(item))}
+							onRemoveData={item => dispatch(removeStarship(item))}
+							isEmpty={data.length === 0}
 						/>
 					)}
 				/>
